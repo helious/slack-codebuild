@@ -9,52 +9,56 @@ async function main() {
         throw new Error("Missing SLACK_WEBHOOK_URL environment variable.");
     }
 
-    const buildLink = process.env.CODEBUILD_BUILD_URL;
+    const buildUrl = process.env.CODEBUILD_BUILD_URL;
+    const buildLink = {
+        text: {
+            type: "plain_text",
+            text: "View Build Details",
+        },
+        url: buildUrl,
+    };
     const sourceVersion = process.env.CODEBUILD_SOURCE_VERSION;
     const isDevelop = sourceVersion === "develop";
-    const sourceLink = `${process.env.CODEBUILD_SOURCE_REPO_URL}/${
-        isDevelop ? "tree" : "pulls"
-    }/${isDevelop ? "develop" : sourceVersion.split("pr/")[1]}`;
-    const sourceMessage = execSync("git log -1 --pretty=%B").toString();
+    const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
+        ".git",
+        ""
+    );
+    const sourceUrl = `${sourceRepoUrl}/${isDevelop ? "tree" : "pulls"}/${
+        isDevelop ? "develop" : sourceVersion.split("pr/")[1]
+    }`;
+    const sourceMessage = execSync("git log -1 --pretty=%B")
+        .toString()
+        .split("\n")
+        .slice(-1);
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
 
     await got(url, {
         method: "POST",
         body: JSON.stringify({
-            attachments: [
+            blocks: [
                 {
-                    blocks: [
-                        {
-                            type: "section",
-                            text: {
-                                type: "mrkdwn",
-                                text: success
-                                    ? `Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceLink}|${sourceMessage}>`
-                                    : "Deployment failed to https://web.payments.shootproof.dev",
-                            },
-                            accessory: {
-                                type: "overflow",
-                                options: [
-                                    {
-                                        text: {
-                                            type: "plain_text",
-                                            text: "View Pull Request",
-                                        },
-                                        url: sourceLink,
-                                    },
-                                    {
-                                        text: {
-                                            type: "plain_text",
-                                            text: "View Build Details",
-                                        },
-                                        url: buildLink,
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                    color: success ? "good" : "danger",
-                    fallback: success ? "Build success!" : "Build failure.",
+                    type: "section",
+                    text: {
+                        type: "mrkdwn",
+                        text: success
+                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${sourceMessage}>`
+                            : "🚨 Deployment failed to https://web.payments.shootproof.dev",
+                    },
+                    accessory: {
+                        type: "overflow",
+                        options: isDevelop
+                            ? [buildLink]
+                            : [
+                                  {
+                                      text: {
+                                          type: "plain_text",
+                                          text: `View Pull Request`,
+                                      },
+                                      url: sourceUrl,
+                                  },
+                                  buildLink,
+                              ],
+                    },
                 },
             ],
         }),
