@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { execSync } = require('child_process')
+const { execSync } = require("child_process");
 const got = require("got");
 
 async function main() {
@@ -9,17 +9,13 @@ async function main() {
         throw new Error("Missing SLACK_WEBHOOK_URL environment variable.");
     }
 
-    console.log(process.env.CODEBUILD_SOURCE_VERSION);
-    console.log(process.env.CODEBUILD_SOURCE_REPO_URL);
-    console.log(process.env);
-
     const buildLink = process.env.CODEBUILD_BUILD_URL;
-    const gitCommitMessage = execSync('git log -1 --pretty=%B').toString().split(
-        "\n"
-    ).slice(-1);
-    const prLink = `${process.env.CODEBUILD_SOURCE_REPO_URL}/pull/${
-        process.env.CODEBUILD_SOURCE_VERSION.split("pr/")[1]
-    }`;
+    const sourceVersion = process.env.CODEBUILD_SOURCE_VERSION;
+    const isDevelop = sourceVersion === "develop";
+    const sourceLink = `${process.env.CODEBUILD_SOURCE_REPO_URL}/${
+        isDevelop ? "tree" : "pulls"
+    }/${isDevelop ? "develop" : sourceVersion.split("pr/")[1]}`;
+    const sourceMessage = execSync("git log -1 --pretty=%B").toString();
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
 
     await got(url, {
@@ -33,7 +29,7 @@ async function main() {
                             text: {
                                 type: "mrkdwn",
                                 text: success
-                                    ? `Deployment successful to https://web.payments.shootproof.dev\n\n<${prLink}|${gitCommitMessage}>`
+                                    ? `Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceLink}|${sourceMessage}>`
                                     : "Deployment failed to https://web.payments.shootproof.dev",
                             },
                             accessory: {
@@ -44,7 +40,7 @@ async function main() {
                                             type: "plain_text",
                                             text: "View Pull Request",
                                         },
-                                        url: prLink,
+                                        url: sourceLink,
                                     },
                                     {
                                         text: {
