@@ -26,6 +26,9 @@ async function main() {
     const sourceUrl = `${sourceRepoUrl}/${isDevelop ? "tree" : "pull"}/${
         isDevelop ? "develop" : sourceVersion.split("pr/")[1]
     }`;
+
+    console.log(execSync("git log -1 --pretty=%B").toString());
+
     const sourceMessage = execSync("git log -1 --pretty=%B")
         .toString()
         .split("\n")
