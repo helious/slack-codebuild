@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const { execSync } = require('child_process')
 const got = require("got");
 
 async function main() {
@@ -8,15 +9,15 @@ async function main() {
         throw new Error("Missing SLACK_WEBHOOK_URL environment variable.");
     }
 
-    console.log(process.env.CODEBUILD_GIT_MESSAGE);
-    console.log(process.env.CODEBUILD_WEBHOOK_TRIGGER);
+    console.log(process.env.CODEBUILD_SOURCE_VERSION);
+    console.log(process.env.CODEBUILD_SOURCE_REPO_URL);
 
     const buildLink = process.env.CODEBUILD_BUILD_URL;
-    const gitCommitMessage = process.env.CODEBUILD_GIT_MESSAGE.split(
+    const gitCommitMessage = execSync('git log -1 --pretty=%B').split(
         "\n"
     ).slice(-1);
     const prLink = `${process.env.CODEBUILD_SOURCE_REPO_URL}/pull/${
-        process.env.CODEBUILD_WEBHOOK_TRIGGER.split("pr/")[1]
+        process.env.CODEBUILD_SOURCE_VERSION.split("pr/")[1]
     }`;
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
 
