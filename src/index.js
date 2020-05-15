@@ -29,7 +29,7 @@ async function main() {
     const sourceMessage = execSync("git log -1 --pretty=%B")
         .toString()
         .split("\n")
-        .slice(-1);
+        .slice(-2)[0];
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
 
     await got(url, {
