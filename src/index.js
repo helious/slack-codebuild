@@ -8,6 +8,9 @@ async function main() {
         throw new Error("Missing SLACK_WEBHOOK_URL environment variable.");
     }
 
+    console.log(process.env.CODEBUILD_GIT_MESSAGE);
+    console.log(process.env.CODEBUILD_WEBHOOK_TRIGGER);
+
     const buildLink = process.env.CODEBUILD_BUILD_URL;
     const gitCommitMessage = process.env.CODEBUILD_GIT_MESSAGE.split(
         "\n"
