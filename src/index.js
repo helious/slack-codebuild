@@ -11,6 +11,7 @@ async function main() {
 
     console.log(process.env.CODEBUILD_SOURCE_VERSION);
     console.log(process.env.CODEBUILD_SOURCE_REPO_URL);
+    console.log(process.env);
 
     const buildLink = process.env.CODEBUILD_BUILD_URL;
     const gitCommitMessage = execSync('git log -1 --pretty=%B').split(
