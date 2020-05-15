@@ -23,7 +23,7 @@ async function main() {
         ".git",
         ""
     );
-    const sourceUrl = `${sourceRepoUrl}/${isDevelop ? "tree" : "pulls"}/${
+    const sourceUrl = `${sourceRepoUrl}/${isDevelop ? "tree" : "pull"}/${
         isDevelop ? "develop" : sourceVersion.split("pr/")[1]
     }`;
     const sourceMessage = execSync("git log -1 --pretty=%B")
