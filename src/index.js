@@ -26,13 +26,11 @@ async function main() {
     const sourceUrl = `${sourceRepoUrl}/${isDevelop ? "tree" : "pull"}/${
         isDevelop ? "develop" : sourceVersion.split("pr/")[1]
     }`;
-
-    console.log(execSync("git log -1 --pretty=%B").toString());
-
     const sourceMessage = execSync("git log -1 --pretty=%B")
         .toString()
         .split("\n")
-        .slice(-2)[0];
+        .filter((message) => !!message)
+        .join(' ');
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
 
     await got(url, {
