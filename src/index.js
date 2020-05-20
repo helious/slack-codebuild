@@ -30,7 +30,7 @@ async function main() {
         .toString()
         .split("\n")
         .filter((message) => !!message)
-        .join(' ');
+        .join(" ");
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
 
     await got(url, {
@@ -44,7 +44,6 @@ async function main() {
                         text: success
                             ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${sourceMessage}>`
                             : "🚨 Deployment failed to https://web.payments.shootproof.dev",
-                        unfurl_links: true,
                     },
                     accessory: {
                         type: "overflow",
