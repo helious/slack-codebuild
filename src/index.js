@@ -17,20 +17,16 @@ async function main() {
         },
         url: buildUrl,
     };
-    const sourceVersion = process.env.CODEBUILD_SOURCE_VERSION;
-    const isDevelop = sourceVersion === "develop";
+    const [mergeCommit, mergeBody] = execSync("git log -1 --pretty=%B")
+        .toString()
+        .split("\n")
+        .filter((message) => !!message);
+    const prNumber = mergeCommit.match(/#[0-9]*/)[0].split("#")[1];
     const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
         ".git",
         ""
     );
-    const sourceUrl = `${sourceRepoUrl}/${isDevelop ? "tree" : "pull"}/${
-        isDevelop ? "develop" : sourceVersion.split("pr/")[1]
-    }`;
-    const sourceMessage = execSync("git log -1 --pretty=%B")
-        .toString()
-        .split("\n")
-        .filter((message) => !!message)
-        .join(" ");
+    const sourceUrl = `${sourceRepoUrl}/pull/${prNumber}`;
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
 
     await got(url, {
@@ -42,23 +38,21 @@ async function main() {
                     text: {
                         type: "mrkdwn",
                         text: success
-                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${sourceMessage}>`
+                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${mergeBody}>`
                             : "🚨 Deployment failed to https://web.payments.shootproof.dev",
                     },
                     accessory: {
                         type: "overflow",
-                        options: isDevelop
-                            ? [buildLink]
-                            : [
-                                  {
-                                      text: {
-                                          type: "plain_text",
-                                          text: `View Pull Request`,
-                                      },
-                                      url: sourceUrl,
-                                  },
-                                  buildLink,
-                              ],
+                        options: [
+                            {
+                                text: {
+                                    type: "plain_text",
+                                    text: `View Pull Request`,
+                                },
+                                url: sourceUrl,
+                            },
+                            buildLink,
+                        ],
                     },
                 },
             ],
