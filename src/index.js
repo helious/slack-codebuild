@@ -45,6 +45,7 @@ async function main() {
                     accessory: {
                         type: "overflow",
                         options: [
+                            buildLink,
                             {
                                 text: {
                                     type: "plain_text",
@@ -52,7 +53,6 @@ async function main() {
                                 },
                                 url: sourceUrl,
                             },
-                            buildLink,
                         ],
                     },
                 },
