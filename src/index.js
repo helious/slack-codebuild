@@ -17,15 +17,12 @@ async function main() {
         },
         url: buildUrl,
     };
-    const [mergeCommit, mergeBody] = execSync("git log -1 --pretty=%B")
+    const mergeCommit = execSync("git log -1 --pretty=%B")
         .toString()
         .split("\n")
-        .filter((message) => !!message);
-
-    console.log(mergeCommit);
-    console.log(mergeBody);
-
-    const prNumber = mergeCommit.match(/#[0-9]*/)[0].split("#")[1];
+        .filter((message) => !!message)
+        .join(" ");
+    const { 1: prNumber } = process.env.CODEBUILD_SOURCE_VERSION.split("pr/");
     const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
         ".git",
         ""
