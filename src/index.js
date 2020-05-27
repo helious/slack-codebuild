@@ -39,7 +39,7 @@ async function main() {
                     text: {
                         type: "mrkdwn",
                         text: success
-                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${mergeBody}>`
+                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${mergeCommit}>`
                             : "🚨 Deployment failed to https://web.payments.shootproof.dev",
                     },
                     accessory: {
