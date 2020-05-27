@@ -17,7 +17,7 @@ async function main() {
         },
         url: buildUrl,
     };
-    const mergeCommit = execSync("git log -1 --pretty=%B")
+    const commit = execSync("git log -1 --pretty=%B")
         .toString()
         .split("\n")
         .filter((message) => !!message)
@@ -39,7 +39,7 @@ async function main() {
                     text: {
                         type: "mrkdwn",
                         text: success
-                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${mergeCommit}>`
+                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${commit}>`
                             : "🚨 Deployment failed to https://web.payments.shootproof.dev",
                     },
                     accessory: {
