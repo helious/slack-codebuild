@@ -21,6 +21,10 @@ async function main() {
         .toString()
         .split("\n")
         .filter((message) => !!message);
+
+    console.log(mergeCommit);
+    console.log(mergeBody);
+
     const prNumber = mergeCommit.match(/#[0-9]*/)[0].split("#")[1];
     const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
         ".git",
