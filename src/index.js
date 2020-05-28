@@ -41,7 +41,6 @@ async function main() {
                         text: success
                             ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${commit}>`
                             : "🚨 Deployment failed to https://web.payments.shootproof.dev",
-                        unfurl_links: true,
                     },
                     accessory: {
                         type: "overflow",
