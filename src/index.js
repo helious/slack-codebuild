@@ -10,25 +10,41 @@ async function main() {
     }
 
     const buildUrl = process.env.CODEBUILD_BUILD_URL;
-    const buildLink = {
-        text: {
-            type: "plain_text",
-            text: "View Build Details",
-        },
-        url: buildUrl,
-    };
     const commit = execSync("git log -1 --pretty=%B")
         .toString()
         .split("\n")
         .filter((message) => !!message)
         .join(" ");
+    const getOverflowOption = (text, url) => ({
+        text: {
+            type: "plain_text",
+            text,
+        },
+        url,
+    });
     const { 1: prNumber } = process.env.CODEBUILD_SOURCE_VERSION.split("pr/");
     const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
         ".git",
         ""
     );
     const sourceUrl = `${sourceRepoUrl}/pull/${prNumber}`;
+    const overflowOptions = [
+        getOverflowOption("View Build in AWS", buildUrl),
+        getOverflowOption("View Pull Request on GitHub", sourceUrl),
+    ],
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
+    let [jiraTicket, commitDescription] = commit.split(':');
+    let jiraLink = '';
+
+    if (commitDescription) {
+        const jiraUrl = `https://tickets.dev.shootproof.com/browse/${jiraTicket}`;
+
+        jiraLink = `<${jiraUrl}|${jiraTicket}>: `;
+
+        overflowOptions.push(getOverflowOption('View Ticket in JIRA', jiraUrl))
+    } else {
+        commitDescription = jiraTicket;
+    }
 
     await got(url, {
         method: "POST",
@@ -39,21 +55,12 @@ async function main() {
                     text: {
                         type: "mrkdwn",
                         text: success
-                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n<${sourceUrl}|${commit}>`
+                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n${jiraLink}<${sourceUrl}|${commitDescription}>`
                             : "🚨 Deployment failed to https://web.payments.shootproof.dev",
                     },
                     accessory: {
                         type: "overflow",
-                        options: [
-                            buildLink,
-                            {
-                                text: {
-                                    type: "plain_text",
-                                    text: `View Pull Request`,
-                                },
-                                url: sourceUrl,
-                            },
-                        ],
+                        options: overflowOptions
                     },
                 },
             ],
