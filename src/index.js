@@ -31,17 +31,17 @@ async function main() {
     const overflowOptions = [
         getOverflowOption("View Build in AWS", buildUrl),
         getOverflowOption("View Pull Request on GitHub", sourceUrl),
-    ],
+    ];
     const success = `${process.env.CODEBUILD_BUILD_SUCCEEDING}` === "1";
-    let [jiraTicket, commitDescription] = commit.split(':');
-    let jiraLink = '';
+    let [jiraTicket, commitDescription] = commit.split(":");
+    let jiraLink = "";
 
     if (commitDescription) {
         const jiraUrl = `https://tickets.dev.shootproof.com/browse/${jiraTicket}`;
 
         jiraLink = `<${jiraUrl}|${jiraTicket}>: `;
 
-        overflowOptions.push(getOverflowOption('View Ticket in JIRA', jiraUrl))
+        overflowOptions.push(getOverflowOption("View Ticket in JIRA", jiraUrl));
     } else {
         commitDescription = jiraTicket;
     }
@@ -60,7 +60,7 @@ async function main() {
                     },
                     accessory: {
                         type: "overflow",
-                        options: overflowOptions
+                        options: overflowOptions,
                     },
                 },
             ],
