@@ -22,6 +22,9 @@ async function main() {
         },
         url,
     });
+
+    console.log(commit);
+
     const { 1: prNumber } = process.env.CODEBUILD_SOURCE_VERSION.split("pr/");
     const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
         ".git",
