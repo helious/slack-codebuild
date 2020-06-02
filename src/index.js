@@ -10,7 +10,7 @@ async function main() {
     }
 
     const buildUrl = process.env.CODEBUILD_BUILD_URL;
-    const commit = execSync("git log -1 --pretty=%B")
+    const commit = execSync("git log -1 --pretty=%B --no-merges")
         .toString()
         .split("\n")
         .filter((message) => !!message)
@@ -22,9 +22,6 @@ async function main() {
         },
         url,
     });
-
-    console.log(commit);
-
     const { 1: prNumber } = process.env.CODEBUILD_SOURCE_VERSION.split("pr/");
     const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
         ".git",
