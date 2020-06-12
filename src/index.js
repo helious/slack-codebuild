@@ -12,9 +12,7 @@ async function main() {
     console.log(execSync("git log -5 --pretty=%B --no-merges").toString());
 
     const buildUrl = process.env.CODEBUILD_BUILD_URL;
-    const commit = execSync(
-        "git log -1 --grep 'Merge pull request' --pretty=%b --merges"
-    )
+    const commit = execSync("git log -1 --pretty=%B --no-merges")
         .toString()
         .split("\n")
         .filter((message) => !!message)
