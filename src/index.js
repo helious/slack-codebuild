@@ -9,14 +9,8 @@ async function main() {
         throw new Error("Missing SLACK_WEBHOOK_URL environment variable.");
     }
 
-    console.log(
-        execSync(
-            'git log -1 --merges --pretty=%b'
-        ).toString()
-    );
-
     const buildUrl = process.env.CODEBUILD_BUILD_URL;
-    const commit = execSync("git log -1 --pretty=%B --no-merges")
+    const commit = execSync("git log -1 --merges --pretty=%b")
         .toString()
         .split("\n")
         .filter((message) => !!message)
