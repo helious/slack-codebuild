@@ -9,12 +9,12 @@ async function main() {
         throw new Error("Missing SLACK_WEBHOOK_URL environment variable.");
     }
 
+    console.log(execSync("git log -1 --merges --pretty=%B").toString());
+
     const buildUrl = process.env.CODEBUILD_BUILD_URL;
-    const commit = execSync("git log -1 --merges --pretty=%b")
+    const [mergeCommit, _, commit] = execSync("git log -1 --merges --pretty=%B")
         .toString()
-        .split("\n")
-        .filter((message) => !!message)
-        .join(" ");
+        .split("\n");
     const getOverflowOption = (text, url) => ({
         text: {
             type: "plain_text",
@@ -22,7 +22,7 @@ async function main() {
         },
         url,
     });
-    const { 1: prNumber } = process.env.CODEBUILD_SOURCE_VERSION.split("pr/");
+    const prNumber = mergeCommit.match(/#([0-9]*)/)[1];
     const sourceRepoUrl = process.env.CODEBUILD_SOURCE_REPO_URL.replace(
         ".git",
         ""
