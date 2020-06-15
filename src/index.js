@@ -11,7 +11,7 @@ async function main() {
 
     console.log(
         execSync(
-            'git log -1 --grep="Merge pull request" --merges --pretty=%b'
+            'git log -1 --merges --pretty=%b'
         ).toString()
     );
 
