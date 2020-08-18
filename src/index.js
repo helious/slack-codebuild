@@ -55,8 +55,8 @@ async function main() {
                     text: {
                         type: "mrkdwn",
                         text: success
-                            ? `✅ Deployment successful to https://web.payments.shootproof.dev\n\n${jiraLink}<${sourceUrl}|${commitDescription}>`
-                            : "🚨 Deployment failed to https://web.payments.shootproof.dev",
+                            ? `✅ Deployment successful to ${process.env.REACT_APP_BASE_URL}\n\n${jiraLink}<${sourceUrl}|${commitDescription}>`
+                            : `🚨 Deployment failed to ${process.env.REACT_APP_BASE_URL}`,
                     },
                     accessory: {
                         type: "overflow",
