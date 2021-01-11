@@ -8,7 +8,7 @@
   "scripts": {
     "test": "eslint src"
   },
-  "repository": "https://github.com/ChrisAckerman/slack-codebuild.git",
+  "repository": "https://github.com/helious/slack-codebuild.git",
   "author": "Chris Ackerman <chris@topher.land>, helious <rangemonk@gmail.com>",
   "license": "MIT",
   "dependencies": {
