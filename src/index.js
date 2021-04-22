@@ -37,7 +37,7 @@ async function main() {
     let jiraLink = "";
 
     if (commitDescription) {
-        const jiraUrl = `https://tickets.dev.shootproof.com/browse/${escape(
+        const jiraUrl = `https://shootproof.atlassian.net/browse/${escape(
             jiraTicket
         )}`;
 
